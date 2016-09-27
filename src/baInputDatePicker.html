@@ -1,0 +1,39 @@
+<div class="ba-input-date-picker col-lg-12">
+  <div class="input-group">
+    <span class="input-group-addon" *ngIf="labelText">{{ labelText }}</span>
+    <input type="text" id="dateInput" class="form-control ba-calendar-input" [ngModel]="value"
+           [placeholder]="placeholder"/>
+    <span class="input-group-btn">
+      <button type="button" class="btn btn-secondary ba-calendar-btn" (click)="onInputButtonClick()">
+        <i class="fa fa-calendar"></i>
+      </button>
+    </span>
+  </div>
+  <div class="ba-calendar">
+    <div class="ba-calendar-container" [class.opened]="opened">
+      <div class="ba-calendar-top" [ngClass]="topClass">
+        <i class="ion-arrow-left-b" (click)="prevMonth()"></i>
+        <span>{{ date.format('MMMM YYYY') }}</span>
+        <i class="ion-arrow-right-b" (click)="nextMonth()"></i>
+      </div>
+      <div class="ba-calendar-days" [ngClass]="dayBarClass">
+        <span>Mon</span>
+        <span>Tue</span>
+        <span>Wed</span>
+        <span>Thu</span>
+        <span>Fri</span>
+        <span>Sat</span>
+        <span>Sun</span>
+      </div>
+      <div class="ba-calendar-days-grid" [ngClass]="gridClass">
+      <span *ngFor="let d of days; let i = index;"
+            (click)="selectDate($event, i)"
+            [class.today]="d.today"
+            [class.is-active]="d.selected">
+        {{ d.day }}
+      </span>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,19 @@
+# Node Files #
+/node_modules
+/bower_components
+npm-debug.log
+
+# Typing #
+/src/typings/tsd/
+/typings/
+/tsd_typings/
+
+# IDE #
+.idea/
+*.swp
+
+*.js
+!/config/**/*.js
+!webpack.config.js
+*.map
+/build
