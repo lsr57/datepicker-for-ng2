@@ -37,6 +37,7 @@ export class BaInputDatePickerComponent implements ControlValueAccessor {
   private viewDate: string = null;
   private date:any = moment();
   private opened: boolean = false;
+  private isoFormat: string = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 
   constructor(private _elementRef: ElementRef) {}
 
@@ -62,10 +63,12 @@ export class BaInputDatePickerComponent implements ControlValueAccessor {
   }
   @Output() valueChange: any = new EventEmitter();
   set value(newValue: any) {
-    let date = (newValue instanceof moment) ? newValue : moment(newValue);
+    let date = (newValue instanceof moment)? newValue : moment(newValue, [this.isoFormat, this.format], true);
+
+    this.viewDate = date.isValid()? date.format(this.format) : newValue;
+
+    this.onChange(this.viewDate);
     this.valueChange.emit(date.toISOString());
-    this.onChange(date);
-    this.viewDate = date.format(this.format);
   }
 
   ngOnInit(): void {
@@ -132,8 +135,7 @@ export class BaInputDatePickerComponent implements ControlValueAccessor {
 
     let date: CalendarDate = this.days[i];
     let selectedDate = moment(`${date.day}.${date.month}.${date.year} 06:00:00`, 'DD.MM.YYYY HH:mm:ss');
-    this.value = selectedDate.toISOString();
-    this.viewDate = selectedDate.format(this.format);
+    this.value = selectedDate;
     this.closeCalendar();
     this.generateCalendar();
   }
