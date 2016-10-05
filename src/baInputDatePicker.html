@@ -1,7 +1,7 @@
 <div class="ba-input-date-picker col-lg-12">
   <div class="input-group">
     <span class="input-group-addon" *ngIf="labelText">{{ labelText }}</span>
-    <input type="text" id="dateInput" class="form-control ba-calendar-input" [ngModel]="value"
+    <input type="text" id="dateInput" class="form-control ba-calendar-input" name="value" [(ngModel)]="value"
            [placeholder]="placeholder"/>
     <span class="input-group-btn">
       <button type="button" class="btn btn-secondary ba-calendar-btn" (click)="onInputButtonClick()">

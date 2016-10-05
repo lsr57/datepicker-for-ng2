@@ -1,6 +1,6 @@
-import {Component, Input, Output, EventEmitter, ElementRef} from "@angular/core";
+import {Component, Input, Output, EventEmitter, ElementRef, forwardRef} from "@angular/core";
 import moment = require("moment");
-import {ControlValueAccessor} from "@angular/forms";
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 interface CalendarDate {
   day: number;
@@ -14,12 +14,15 @@ interface CalendarDate {
 @Component({
   selector: 'ba-input-datepicker',
   host: {
-    '(document:click)': 'handleClick($event)',
+    '(document:click)': 'handleClick($event)'
   },
   template: require('./baInputDatePicker.html'),
-  styles: [require('./baDatePicker.scss')]
+  styles: [require('./baDatePicker.scss')],
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => BaInputDatePickerComponent), multi: true }
+  ],
 })
-export class BaInputDatePickerComponent {
+export class BaInputDatePickerComponent implements ControlValueAccessor {
 /*  @Input() ngModel: any;
   @Output ngModelChange: any = new EventEmitter();*/
   //@Input() value: string;
@@ -37,6 +40,23 @@ export class BaInputDatePickerComponent {
 
   constructor(private _elementRef: ElementRef) {}
 
+  /****** ControlValueAccessor implementation *******/
+  onChange = (_) => {};
+  onTouched = () => {};
+
+  writeValue(value: any): void {
+    this.value = value;
+  }
+
+  registerOnChange(fn: (_: any) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+  /***************************************************/
+
   @Input() get value(): any {
     return this.viewDate;
   }
@@ -44,10 +64,12 @@ export class BaInputDatePickerComponent {
   set value(newValue: any) {
     let date = (newValue instanceof moment) ? newValue : moment(newValue);
     this.valueChange.emit(date.toISOString());
+    this.onChange(date);
     this.viewDate = date.format(this.format);
   }
 
   ngOnInit(): void {
+    // init values
     this.format = this.format || 'YYYY-MM-DD';
     this.placeholder = this.placeholder || '';
     this.value = this.value || moment(moment().toISOString());
